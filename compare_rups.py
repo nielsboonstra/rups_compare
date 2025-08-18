@@ -15,11 +15,27 @@ def load_excel(file : str, header : int = 0, sheet_name: int = 0) -> pd.DataFram
     :return: A pandas DataFrame containing the Excel data.
     """
     try:
+        if header < 0:
+            df_temp = pd.read_excel(file, engine='openpyxl', header=0, sheet_name=sheet_name, converters={"Maatregelnr.":str})
+            header = guess_header_row(df_temp)
         df = pd.read_excel(file, engine='openpyxl', header=header, sheet_name=sheet_name, converters={"Maatregelnr.":str})
         return df
     except Exception as e:
         st.error(f"Fout bij het laden van het Excel-bestand: {e}")
         return None
+
+def guess_header_row(df: pd.DataFrame) -> int:
+    """
+    Guess the header row of the DataFrame by checking for the first row with year integers (a string of length 4, e.g. 2025).
+
+    :param df: The input DataFrame.
+    :return: The guessed header row index.
+    """
+    for i in range(len(df)):
+        # Check if any cell in the row is a 4-digit year
+        if any(re.match(r'^\d{4}$', str(x)) for x in df.iloc[i]):
+            return i
+    return 0
 
 def find_year_with_x(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -147,7 +163,7 @@ with st.sidebar:
     uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
     sheet_names = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
     sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_old")
-    header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel (standaard is 0)", min_value=0, value=0, key="header_row_old")
+    header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=-1, value=0, key="header_row_old")
     if uploaded_file_old is not None:
         df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
         if df_old is not None:
@@ -157,7 +173,7 @@ with st.sidebar:
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
     sheet_names = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
     sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_new")
-    header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel (standaard is 0)", min_value=0, value=0, key="header_row_new")
+    header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=-1, value=0, key="header_row_new")
     if uploaded_file_new is not None:
         df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
         if df_new is not None:
@@ -209,3 +225,4 @@ if st.session_state['df_old'] is not None and st.session_state['df_new'] is not 
             file_name='rups_vergelijking.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
+        st.balloons()
