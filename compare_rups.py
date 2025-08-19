@@ -183,7 +183,7 @@ with st.sidebar:
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
     if uploaded_file_new is not None:
-        df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
+        df_new = load_excel(uploaded_file_new)
         sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
         st.session_state['df_new'] = df_new
         # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
