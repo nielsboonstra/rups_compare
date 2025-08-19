@@ -173,7 +173,7 @@ with st.sidebar:
             sheet_names = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
             sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_old")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_old")
-            if st.button("Herlaad gegevens"):
+            if st.button("Herlaad gegevens", key="reload_old"):
                 df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
             st.session_state['df_old'] = df_old
 
@@ -188,7 +188,7 @@ with st.sidebar:
             sheet_names = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
             sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_new")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_new")
-            if st.button("Herlaad gegevens"):
+            if st.button("Herlaad gegevens", key="reload_new"):
                 df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
             st.session_state['df_new'] = df_new
 
