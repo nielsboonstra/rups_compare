@@ -186,7 +186,7 @@ with st.sidebar:
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_old")
             if st.button("Herlaad gegevens", key="reload_old"):
                 df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
-            st.session_state['df_old'] = df_old
+                st.session_state['df_old'] = df_old
 
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
@@ -207,7 +207,7 @@ with st.sidebar:
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_new")
             if st.button("Herlaad gegevens", key="reload_new"):
                 df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
-            st.session_state['df_new'] = df_new
+                st.session_state['df_new'] = df_new
 
     # Check if both dataframes are loaded
     if st.session_state['df_old'] is not None and st.session_state['df_new'] is not None:
