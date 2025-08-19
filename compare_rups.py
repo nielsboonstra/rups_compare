@@ -150,6 +150,10 @@ def compare_dataframes(df_old : pd.DataFrame, df_new: pd.DataFrame, cols: dict) 
 
 if 'df_old' not in st.session_state:
     st.session_state['df_old'] = None
+if 'sheet_names_old' not in st.session_state:
+    st.session_state['sheet_names_old'] = None
+if 'sheet_names_new' not in st.session_state:
+    st.session_state['sheet_names_new'] = None
 if 'df_new' not in st.session_state:
     st.session_state['df_new'] = None
 if 'comparison_type' not in st.session_state:
@@ -171,12 +175,13 @@ with st.sidebar:
             sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
             st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
             st.session_state['df_old'] = df_old
-        if len(sheet_names_old) > 1:
+            st.session_state['sheet_names_old'] = sheet_names_old
+        if len(st.session_state['sheet_names_old']) > 1:
             st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
-        expanded = True if len(sheet_names_old) > 1 else False
+        expanded = True if len(st.session_state['sheet_names_old']) > 1 else False
         with st.expander("Pas de instellingen aan indien nodig:", expanded=expanded):
             st.write("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
-            sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
+            sheet_name = st.selectbox("Kies een werkblad:", st.session_state['sheet_names_old'], key="sheet_name_old")
             st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen als onderstaande waarde 0 blijft.")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_old")
             if st.button("Herlaad gegevens", key="reload_old"):
@@ -191,12 +196,13 @@ with st.sidebar:
             sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
             st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
             st.session_state['df_new'] = df_new
-        if len(sheet_names_new) > 1:
+            st.session_state['sheet_names_new'] = sheet_names_new
+        if len(st.session_state['sheet_names_new']) > 1:
             st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
-        expanded = True if len(sheet_names_new) > 1 else False
+        expanded = True if len(st.session_state['sheet_names_new']) > 1 else False
         with st.expander("Pas de instellingen aan indien nodig:", expanded=expanded):
             st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
-            sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
+            sheet_name = st.selectbox("Kies een werkblad:", st.session_state['sheet_names_new'], key="sheet_name_new")
             st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen als onderstaande waarde 0 blijft.")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_new")
             if st.button("Herlaad gegevens", key="reload_new"):
