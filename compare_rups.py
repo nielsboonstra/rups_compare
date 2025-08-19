@@ -169,22 +169,27 @@ with st.sidebar:
         st.session_state['df_old'] = df_old
         # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
         st.success("Oud RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
-        st.info("Als je aanpassingen wilt maken, kun je de werkbladnaam en de header rij hieronder aanpassen.")
-        sheet_names = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
-        sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_old")
-        header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=-1, value=-1, key="header_row_old")
-        if st.button("Herlaad gegevens"):
-            df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
+        with st.expander("Pas de instellingen aan indien nodig:", expanded=False):
+            sheet_names = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
+            sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_old")
+            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_old")
+            if st.button("Herlaad gegevens"):
+                df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
             st.session_state['df_old'] = df_old
 
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
-    sheet_names = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
-    sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_new")
-    header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=-1, value=-1, key="header_row_new")
     if uploaded_file_new is not None:
         df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
-        if df_new is not None:
+        st.session_state['df_new'] = df_new
+        # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
+        st.success("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
+        with st.expander("Pas de instellingen aan indien nodig:", expanded=False):
+            sheet_names = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
+            sheet_name = st.selectbox("Kies een werkblad:", sheet_names, key="sheet_name_new")
+            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_new")
+            if st.button("Herlaad gegevens"):
+                df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
             st.session_state['df_new'] = df_new
 
     # Check if both dataframes are loaded
