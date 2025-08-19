@@ -170,15 +170,15 @@ with st.sidebar:
         sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
         st.session_state['df_old'] = df_old
         # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
-        st.success("Oud RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
+        st.toast("🎉 Oud RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
         if len(sheet_names_old) > 1:
-            st.write("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
+            st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
         expanded = True if len(sheet_names_old) > 1 else False
         with st.expander("Pas de instellingen aan indien nodig:", expanded=expanded):
-            st.info("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
+            st.write("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
             sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
+            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen als onderstaande waarde 0 blijft.")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_old")
-            st.info("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen.")
             if st.button("Herlaad gegevens", key="reload_old"):
                 df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
             st.session_state['df_old'] = df_old
@@ -190,14 +190,14 @@ with st.sidebar:
         sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
         st.session_state['df_new'] = df_new
         # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
-        st.success("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
+        st.toast("🎉 Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
         if len(sheet_names_new) > 1:
-            st.write("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
+            st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
         expanded = True if len(sheet_names_new) > 1 else False
         with st.expander("Pas de instellingen aan indien nodig:", expanded=expanded):
-            st.info("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
+            st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
             sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
-            st.info("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen.")
+            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen als onderstaande waarde 0 blijft.")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_new")
             if st.button("Herlaad gegevens", key="reload_new"):
                 df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
