@@ -166,11 +166,11 @@ with st.sidebar:
     st.markdown("**1. Upload een ouder RUPS-bestand (Excel-format) om te beginnen:** 👇")
     uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
     if uploaded_file_old is not None:
-        df_old = load_excel(uploaded_file_old)
-        sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
-        st.session_state['df_old'] = df_old
-        # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
-        st.toast("🎉 Oud RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
+        if st.session_state['df_old'] is None:
+            df_old = load_excel(uploaded_file_old)
+            sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
+            st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
+            st.session_state['df_old'] = df_old
         if len(sheet_names_old) > 1:
             st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
         expanded = True if len(sheet_names_old) > 1 else False
@@ -186,11 +186,11 @@ with st.sidebar:
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
     if uploaded_file_new is not None:
-        df_new = load_excel(uploaded_file_new)
-        sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
-        st.session_state['df_new'] = df_new
-        # Show user message that file is uploaded and can be inspected on the main page. If adjustments are needed, they can be made using the input fields and button below.
-        st.toast("🎉 Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu rechts inspecteren op de hoofdpagina.")
+        if st.session_state['df_new'] is None:
+            df_new = load_excel(uploaded_file_new)
+            sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
+            st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
+            st.session_state['df_new'] = df_new
         if len(sheet_names_new) > 1:
             st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
         expanded = True if len(sheet_names_new) > 1 else False
