@@ -191,7 +191,7 @@ with st.sidebar:
                 sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
                 st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
                 header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_old")
-                df_old = load_excel(uploaded_file_old, year_type_old,header=header_row, sheet_name=sheet_name)
+                df_old = load_excel(uploaded_file_old, year_type=year_type_old, header=header_row, sheet_name=sheet_name)
                 if st.session_state['df_old'] is None:
                     st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
                 st.session_state['df_old'] = df_old
@@ -208,7 +208,7 @@ with st.sidebar:
                 sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
                 st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
                 header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_new")
-                df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
+                df_new = load_excel(uploaded_file_new, year_type=year_type_new, header=header_row, sheet_name=sheet_name)
                 if st.session_state['df_new'] is None:
                     st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
                 st.session_state['df_new'] = df_new
