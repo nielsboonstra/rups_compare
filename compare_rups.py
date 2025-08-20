@@ -266,7 +266,6 @@ if st.session_state['df_old'] is not None and st.session_state['df_new'] is not 
             df_dropped.to_excel(writer, sheet_name='Verwijderd', index=False)
             df_added.to_excel(writer, sheet_name='Toegevoegd', index=False)
         st.success("Vergelijking uitgevoerd! Download de resultaten hieronder.")
-
         st.markdown("**5. Download de resultaten als Excel:**")
         st.download_button(
             label="Download Vergelijking",
@@ -274,4 +273,5 @@ if st.session_state['df_old'] is not None and st.session_state['df_new'] is not 
             file_name='rups_vergelijking.xlsx',
             mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
+        st.info("Voor het interpreteren van tabblad 'Vergelijking' kan het helpen om conditional formatting toe te passen op de laatste drie kolommen in Excel.", icon="💡")
         st.balloons()
