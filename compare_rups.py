@@ -183,6 +183,9 @@ st.title("🐛 RUPS vergelijkingstool")
 st.write("Deze tool helpt jou met het vergelijken van RUPS-planningen tussen twee verschillende jaren.")
 st.write("Begin in de zijbalk met het uploaden van de RUPS-planningsbestanden.")
 
+if st.button("Meer uitleg over deze tool", icon="ℹ️"):
+    explanation_dialog()
+
 with st.sidebar:
     st.markdown("**1. Upload een ouder RUPS-bestand (Excel-format) om te beginnen:** 👇")
     uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
