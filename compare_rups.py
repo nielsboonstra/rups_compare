@@ -186,12 +186,12 @@ with st.sidebar:
     if uploaded_file_old is not None:
         if st.session_state['df_old'] is None:
             df_old = load_excel(uploaded_file_old, year_type_old)
-            sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
             st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
             st.session_state['df_old'] = df_old
         with st.expander("Pas de instellingen aan indien nodig:", expanded=True):
             st.write("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
-            sheet_name = st.selectbox("Kies een werkblad:", st.session_state['sheet_names_old'], key="sheet_name_old")
+            sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
+            sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
             st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_old")
             if st.button("Herlaad gegevens", key="reload_old"):
@@ -205,12 +205,12 @@ with st.sidebar:
     if uploaded_file_new is not None:
         if st.session_state['df_new'] is None:
             df_new = load_excel(uploaded_file_new, year_type_new)
-            sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
             st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
             st.session_state['df_new'] = df_new
         with st.expander("Pas de instellingen aan:", expanded=True):
             st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
-            sheet_name = st.selectbox("Kies een werkblad:", st.session_state['sheet_names_new'], key="sheet_name_new")
+            sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
+            sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
             st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
             header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_new")
             if st.button("Herlaad gegevens", key="reload_new"):
