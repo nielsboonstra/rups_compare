@@ -4,16 +4,15 @@ import regex as re
 
 st.set_page_config(page_title="🐛 RUPS vergelijkingstool", layout="wide")
 
-@st.dialog("Uitleg over deze tool", width="large")
+@st.dialog("Uitleg over de RUPS vergelijkingstool", width="large")
 def explanation_dialog():
-    st.markdown("## Uitleg over de RUPS vergelijkingstool")
     st.markdown("### Input")
     st.markdown("Om deze tool te kunnen gebruiken, heb je twee Excel-bestanden nodig met RUPS-maatregelen.")
     st.markdown("Zorg ervoor dat de bestanden de juiste structuur hebben, met in ieder geval de volgende elementen:")
     st.markdown("- Een kolom voor Maatregelnr. (maatregelnummer)")
     st.markdown("- Een kolom met de Maatregelnaam")
     st.markdown("- Meerdere kolommen met jaartallen (b.v. 2024, 2025), met een 'X' in de rijen onder deze kolommen")
-    st.markdown("_Het maakt niet uit of je Excel één of meerdere werkbladen heeft. Bij >1 werkbladen zal de webapp je vragen om een werkblad te selecteren._")
+    st.markdown("ℹ️ _Het maakt niet uit of je Excel één of meerdere werkbladen heeft. Bij > 1 werkbladen zal de webapp je vragen om een werkblad te selecteren._")
     st.divider()
     st.markdown("### Output")
     st.markdown("Na het uploaden van de bestanden en het selecteren van de juiste kolommen, zal de tool één .xlsx-bestand genereren met de volgende 3 tabbladen:")
