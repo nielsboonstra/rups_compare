@@ -4,6 +4,23 @@ import regex as re
 
 st.set_page_config(page_title="🐛 RUPS vergelijkingstool", layout="wide")
 
+@st.dialog("Uitleg over deze tool")
+def explanation_dialog():
+    st.markdown("## Uitleg over de RUPS vergelijkingstool")
+    st.markdown("### Input")
+    st.markdown("Om deze tool te kunnen gebruiken, heb je twee Excel-bestanden nodig met RUPS-maatregelen.")
+    st.markdown("Zorg ervoor dat de bestanden de juiste structuur hebben, met in ieder geval de volgende elementen:")
+    st.markdown("- Een kolom voor Maatregelnr. (maatregelnummer)")
+    st.markdown("- Een kolom met de Maatregelnaam")
+    st.markdown("- Meerdere kolommen met jaartallen (b.v. 2024, 2025), met een 'X' in de rijen onder deze kolommen")
+    st.markdown("_Het maakt niet uit of je Excel één of meerdere werkbladen heeft. Bij >1 werkbladen zal de webapp je vragen om een werkblad te selecteren._")
+    st.divider()
+    st.markdown("### Output")
+    st.markdown("Na het uploaden van de bestanden en het selecteren van de juiste kolommen, zal de tool één .xlsx-bestand genereren met de volgende 3 tabbladen:")
+    st.markdown("- **Vergelijking**: Dit tabblad bevat de vergelijking tussen RUPS-maatregelen die zowel in de oude als de nieuwe planning staan, gebaseerd op maatregelnummer. De tool zal laten zien welke maatregelnamen zijn gewijzigd, en of het jaar waarin de maatregel gepland staat is gewijzigd.")
+    st.markdown("- **Verwijderd**: Dit tabblad bevat de RUPS-maatregelen die zijn verwijderd in de nieuwe planning, maar wel aanwezig waren in de oude planning.")
+    st.markdown("- **Toegevoegd**: Dit tabblad bevat de RUPS-maatregelen die zijn toegevoegd in de nieuwe planning, en niet aanwezig waren in de oude planning.")
+
 @st.cache_data
 def load_excel(file : str, header : int = 0, sheet_name: int = 0) -> pd.DataFrame:
     """
