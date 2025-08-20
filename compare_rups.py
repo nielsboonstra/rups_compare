@@ -180,38 +180,38 @@ if st.button("Meer uitleg over deze tool", icon="ℹ️"):
 
 with st.sidebar:
     st.markdown("**1. Upload een ouder RUPS-bestand (Excel-format) om te beginnen:** 👇")
-    year_type_old = st.segmented_control("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_old")
-    st.session_state['year_type_old'] = year_type_old
-    if st.session_state['year_type_old'] is not None:
-        uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
+    uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
     if uploaded_file_old is not None:
-        with st.expander("Pas de instellingen aan:", expanded=True):
-            st.write("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
-            sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
-            sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
-            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
-            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_old")
-            df_old = load_excel(uploaded_file_old, year_type_old,header=header_row, sheet_name=sheet_name)
-            if st.session_state['df_old'] is None:
-                st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
-            st.session_state['df_old'] = df_old
+        year_type_old = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_old")
+        st.session_state['year_type_old'] = year_type_old
+        if st.session_state['year_type_old'] is not None:
+            with st.expander("Pas de instellingen aan:", expanded=True):
+                st.write("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
+                sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
+                sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
+                st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
+                header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_old")
+                df_old = load_excel(uploaded_file_old, year_type_old,header=header_row, sheet_name=sheet_name)
+                if st.session_state['df_old'] is None:
+                    st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
+                st.session_state['df_old'] = df_old
 
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
-    year_type_new = st.segmented_control("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_new")
-    st.session_state['year_type_new'] = year_type_new
-    if st.session_state['year_type_old'] is not None:
-        uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
+    uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
     if uploaded_file_new is not None:
-        with st.expander("Pas de instellingen aan:", expanded=True):
-            st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
-            sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
-            sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
-            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
-            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_new")
-            df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
-            if st.session_state['df_new'] is None:
-                st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
-            st.session_state['df_new'] = df_new
+        year_type_new = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_new")
+        st.session_state['year_type_new'] = year_type_new
+        if st.session_state['year_type_new'] is not None:
+            with st.expander("Pas de instellingen aan:", expanded=True):
+                st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
+                sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
+                sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
+                st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
+                header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_new")
+                df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
+                if st.session_state['df_new'] is None:
+                    st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
+                st.session_state['df_new'] = df_new
 
     # Check if both dataframes are loaded
     if st.session_state['df_old'] is not None and st.session_state['df_new'] is not None:
