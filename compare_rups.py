@@ -4,7 +4,7 @@ import regex as re
 
 st.set_page_config(page_title="🐛 RUPS vergelijkingstool", layout="wide")
 
-@st.dialog("Uitleg over deze tool")
+@st.dialog("Uitleg over deze tool", width="large")
 def explanation_dialog():
     st.markdown("## Uitleg over de RUPS vergelijkingstool")
     st.markdown("### Input")
