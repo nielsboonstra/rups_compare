@@ -21,7 +21,7 @@ def explanation_dialog():
     st.markdown("- **Toegevoegd**: Dit tabblad bevat de RUPS-maatregelen die zijn toegevoegd in de nieuwe planning, en niet aanwezig waren in de oude planning.")
 
 @st.cache_data
-def load_excel(file : str, year_type_old: str, header : int = 0, sheet_name: int = 0) -> pd.DataFrame:
+def load_excel(file : str, header : int = 0, sheet_name: int = 0) -> pd.DataFrame:
     """
     Load an Excel file into a pandas DataFrame.
 
@@ -190,8 +190,8 @@ with st.sidebar:
                 sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
                 sheet_name = st.selectbox("Kies een werkblad:", sheet_names_old, key="sheet_name_old")
                 st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
-                header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_old")
-                df_old = load_excel(uploaded_file_old, year_type=year_type_old, header=header_row, sheet_name=sheet_name)
+                header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel. Inspecteer de data rechts in het hoofdscherm.", min_value=0, key="header_row_old")
+                df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
                 if st.session_state['df_old'] is None:
                     st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
                 st.session_state['df_old'] = df_old
@@ -206,9 +206,9 @@ with st.sidebar:
                 st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
                 sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
                 sheet_name = st.selectbox("Kies een werkblad:", sheet_names_new, key="sheet_name_new")
-                st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
+                st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Inspecteer de data rechts in het hoofdscherm.")
                 header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_new")
-                df_new = load_excel(uploaded_file_new, year_type=year_type_new, header=header_row, sheet_name=sheet_name)
+                df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
                 if st.session_state['df_new'] is None:
                     st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
                 st.session_state['df_new'] = df_new
@@ -229,12 +229,14 @@ if st.session_state['df_new'] is not None:
 # Ask user to select the columns that contain Maatregel naam and Maatregelnr.
 if st.session_state['df_old'] is not None and st.session_state['df_new'] is not None:
     st.markdown("**3. Selecteer de kolommen die de Maatregel naam en Maatregelnr. bevatten:**")
+    
     if st.session_state['year_type_old'] == "Als 'X' onder een jaartal-kolom":
         df_old = find_year_with_x(st.session_state['df_old'].copy())
     else:
         # Ask user which year column to use
         year_column_old = st.selectbox("Kies de jaar-kolom voor de oude RUPS-data:", st.session_state['df_old'].columns)
         df_old = find_year_with_col(st.session_state['df_old'].copy(), year_column_old)
+    
     if st.session_state['year_type_new'] == "Als 'X' onder een jaartal-kolom":
         df_new = find_year_with_x(st.session_state['df_new'].copy())
     else:
