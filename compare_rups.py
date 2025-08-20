@@ -21,7 +21,7 @@ def explanation_dialog():
     st.markdown("- **Toegevoegd**: Dit tabblad bevat de RUPS-maatregelen die zijn toegevoegd in de nieuwe planning, en niet aanwezig waren in de oude planning.")
 
 @st.cache_data
-def load_excel(file : str, header : int = 0, sheet_name: int = 0) -> pd.DataFrame:
+def load_excel(file : str, year_type_old: str, header : int = 0, sheet_name: int = 0) -> pd.DataFrame:
     """
     Load an Excel file into a pandas DataFrame.
 
@@ -31,30 +31,11 @@ def load_excel(file : str, header : int = 0, sheet_name: int = 0) -> pd.DataFram
     :return: A pandas DataFrame containing the Excel data.
     """
     try:
-        if header == 0:
-            df_temp = pd.read_excel(file, engine='openpyxl', header=0, sheet_name=sheet_name, converters={"Maatregelnr.":str})
-            header = guess_header_row(df_temp)
         df = pd.read_excel(file, engine='openpyxl', header=header, sheet_name=sheet_name, converters={"Maatregelnr.":str})
         return df
     except Exception as e:
         st.error(f"Fout bij het laden van het Excel-bestand: {e}")
         return None
-
-def guess_header_row(df: pd.DataFrame) -> int:
-    """
-    Guess the header row of the DataFrame by checking for the first row with year integers (a string of length 4, e.g. 2025).
-
-    :param df: The input DataFrame.
-    :return: The guessed header row index.
-    """
-    if any(re.match(r'^\d{4}$', str(x)) for x in df.columns):
-        return 0
-    else:
-        for i in range(len(df)):
-            # Check if any cell in the row is a 4-digit year
-            if any(re.match(r'^\d{4}$', str(x)) for x in df.iloc[i]):
-                return i + 1
-    return 0
 
 def find_year_with_x(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -72,6 +53,18 @@ def find_year_with_x(df: pd.DataFrame) -> pd.DataFrame:
     # Convert the 'year' column to string type
     df['year'] = df['year'].astype(int)
     df['year'] = df['year'].astype(str)
+    return df
+
+def find_year_with_col(df : pd.DataFrame, year_column: str) -> pd.DataFrame:
+    """
+    Rename specified column to 'year'
+
+    :param df: The input DataFrame.
+    :param year_column: The name of the column to rename.
+    :return: The modified DataFrame with the renamed column.
+    """
+    
+    df = df.rename(columns={year_column: 'year'})
     return df
 
 def remove_na_vals(df: pd.DataFrame, cols: list) -> pd.DataFrame:
@@ -166,10 +159,10 @@ def compare_dataframes(df_old : pd.DataFrame, df_new: pd.DataFrame, cols: dict) 
 
 if 'df_old' not in st.session_state:
     st.session_state['df_old'] = None
-if 'sheet_names_old' not in st.session_state:
-    st.session_state['sheet_names_old'] = None
-if 'sheet_names_new' not in st.session_state:
-    st.session_state['sheet_names_new'] = None
+if 'year_type_old' not in st.session_state:
+    st.session_state['year_type_old'] = None
+if 'year_type_new' not in st.session_state:
+    st.session_state['year_type_new'] = None
 if 'df_new' not in st.session_state:
     st.session_state['df_new'] = None
 if 'comparison_type' not in st.session_state:
@@ -187,43 +180,39 @@ if st.button("Meer uitleg over deze tool", icon="ℹ️"):
 
 with st.sidebar:
     st.markdown("**1. Upload een ouder RUPS-bestand (Excel-format) om te beginnen:** 👇")
+    year_type_old = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_type_old")
+    st.session_state['year_type_old'] = year_type_old
     uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
     if uploaded_file_old is not None:
         if st.session_state['df_old'] is None:
-            df_old = load_excel(uploaded_file_old)
+            df_old = load_excel(uploaded_file_old, year_type_old)
             sheet_names_old = pd.ExcelFile(uploaded_file_old).sheet_names if uploaded_file_old else []
             st.toast("Oud RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
             st.session_state['df_old'] = df_old
-            st.session_state['sheet_names_old'] = sheet_names_old
-        if len(st.session_state['sheet_names_old']) > 1:
-            st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
-        expanded = True if len(st.session_state['sheet_names_old']) > 1 else False
-        with st.expander("Pas de instellingen aan indien nodig:", expanded=expanded):
+        with st.expander("Pas de instellingen aan indien nodig:", expanded=True):
             st.write("Standaard wordt het eerste werkblad uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
             sheet_name = st.selectbox("Kies een werkblad:", st.session_state['sheet_names_old'], key="sheet_name_old")
-            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen als onderstaande waarde 0 blijft.")
-            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_old")
+            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
+            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_old")
             if st.button("Herlaad gegevens", key="reload_old"):
-                df_old = load_excel(uploaded_file_old, header=header_row, sheet_name=sheet_name)
+                df_old = load_excel(uploaded_file_old, year_type_old,header=header_row, sheet_name=sheet_name)
                 st.session_state['df_old'] = df_old
 
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
+    year_type_new = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_type_new")
+    st.session_state['year_type_new'] = year_type_new
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
     if uploaded_file_new is not None:
         if st.session_state['df_new'] is None:
-            df_new = load_excel(uploaded_file_new)
+            df_new = load_excel(uploaded_file_new, year_type_new)
             sheet_names_new = pd.ExcelFile(uploaded_file_new).sheet_names if uploaded_file_new else []
             st.toast("Nieuw RUPS-bestand succesvol geüpload! Je kunt het nu inspecteren op de hoofdpagina.", icon = "🎉")
             st.session_state['df_new'] = df_new
-            st.session_state['sheet_names_new'] = sheet_names_new
-        if len(st.session_state['sheet_names_new']) > 1:
-            st.warning("Er zijn meerdere werkbladen gevonden. Selecteer een werkblad om te gebruiken:")
-        expanded = True if len(st.session_state['sheet_names_new']) > 1 else False
-        with st.expander("Pas de instellingen aan indien nodig:", expanded=expanded):
+        with st.expander("Pas de instellingen aan:", expanded=True):
             st.write("Standaard wordt het eerste werkblad gebruikt uit de Excel ingeladen. Als je een ander werkblad wilt gebruiken, kies het dan hier:")
             sheet_name = st.selectbox("Kies een werkblad:", st.session_state['sheet_names_new'], key="sheet_name_new")
-            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand. Je hoeft deze instelling alleen aan te passen als de import niet klopt; De tool gebruikt automatisch zelf de eerste rij in Excel met jaartallen als onderstaande waarde 0 blijft.")
-            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, value=0, key="header_row_new")
+            st.write("Kies de rij waar de kolomnamen staan in je Excel-bestand.")
+            header_row = st.number_input("Kies de rij waar de kolomnamen staan in je Excel", min_value=0, key="header_row_new")
             if st.button("Herlaad gegevens", key="reload_new"):
                 df_new = load_excel(uploaded_file_new, header=header_row, sheet_name=sheet_name)
                 st.session_state['df_new'] = df_new
@@ -244,10 +233,19 @@ if st.session_state['df_new'] is not None:
 # Ask user to select the columns that contain Maatregel naam and Maatregelnr.
 if st.session_state['df_old'] is not None and st.session_state['df_new'] is not None:
     st.markdown("**3. Selecteer de kolommen die de Maatregel naam en Maatregelnr. bevatten:**")
-    df_old = find_year_with_x(st.session_state['df_old'].copy())
-    df_new = find_year_with_x(st.session_state['df_new'].copy())
+    if st.session_state['year_type_old'] == "Als 'X' onder een jaartal-kolom":
+        df_old = find_year_with_x(st.session_state['df_old'].copy())
+    else:
+        # Ask user which year column to use
+        year_column_old = st.selectbox("Kies de jaar-kolom voor de oude RUPS-data:", st.session_state['df_old'].columns)
+        df_old = find_year_with_col(st.session_state['df_old'].copy(), year_column_old)
+    if st.session_state['year_type_new'] == "Als 'X' onder een jaartal-kolom":
+        df_new = find_year_with_x(st.session_state['df_new'].copy())
+    else:
+        year_column_new = st.selectbox("Kies de jaar-kolom voor de nieuwe RUPS-data:", st.session_state['df_new'].columns)
+        df_new = find_year_with_col(st.session_state['df_new'].copy(), year_column_new)
     cols = {}
-    #Divide the page in 3 columns
+    #Divide the page in 2 columns
     col1, col2 = st.columns(2)
     with col1:
         cols['maatregelnaam_col_old'] = st.selectbox("Oud - Maatregel naam:", df_old.columns)
