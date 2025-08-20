@@ -63,7 +63,7 @@ def find_year_with_col(df : pd.DataFrame, year_column: str) -> pd.DataFrame:
     :param year_column: The name of the column to rename.
     :return: The modified DataFrame with the renamed column.
     """
-    
+
     df = df.rename(columns={year_column: 'year'})
     return df
 
@@ -180,7 +180,7 @@ if st.button("Meer uitleg over deze tool", icon="ℹ️"):
 
 with st.sidebar:
     st.markdown("**1. Upload een ouder RUPS-bestand (Excel-format) om te beginnen:** 👇")
-    year_type_old = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_type_old")
+    year_type_old = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_old")
     st.session_state['year_type_old'] = year_type_old
     uploaded_file_old = st.file_uploader("Kies een bestand", type=["xlsx"], key="old_file_uploader")
     if uploaded_file_old is not None:
@@ -199,7 +199,7 @@ with st.sidebar:
                 st.session_state['df_old'] = df_old
 
     st.markdown("**2. Upload een nieuw RUPS-bestand (Excel-format):** 👇")
-    year_type_new = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_type_new")
+    year_type_new = st.pills("Hoe zijn de jaartallen in het Excel-bestand aangegeven?", ["Als 'X' onder een jaartal-kolom", "Jaartal is aangegeven als getal onder een Jaar-kolom"], key="year_new")
     st.session_state['year_type_new'] = year_type_new
     uploaded_file_new = st.file_uploader("Kies een bestand", type=["xlsx"], key="new_file_uploader")
     if uploaded_file_new is not None:
