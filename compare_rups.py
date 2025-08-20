@@ -118,9 +118,13 @@ def compare_dataframes(df_old : pd.DataFrame, df_new: pd.DataFrame, cols: dict) 
 
     :return: A tuple containing the comparison DataFrame, dropped DataFrame, and added DataFrame.
     """
-    # Fill NaN values with '-1' in the specified columns
+    # Remove NA values in the specified columns
     df_old = remove_na_vals(df_old, [cols['maatregelnr_col_old']])
     df_new = remove_na_vals(df_new, [cols['maatregelnr_col_new']])
+
+    # Fill empty values in year columns with 0
+    df_old['year'] = df_old['year'].fillna(0)
+    df_new['year'] = df_new['year'].fillna(0)
 
     # Strip leading zeroes from relevant columns
     df_old = strip_zeroes(df_old, [cols['maatregelnr_col_old']])
@@ -229,7 +233,7 @@ if st.session_state['df_new'] is not None:
 # Ask user to select the columns that contain Maatregel naam and Maatregelnr.
 if st.session_state['df_old'] is not None and st.session_state['df_new'] is not None:
     st.markdown("**3. Selecteer de kolommen die de Maatregel naam en Maatregelnr. bevatten:**")
-    
+
     if st.session_state['year_type_old'] == "Als 'X' onder een jaartal-kolom":
         df_old = find_year_with_x(st.session_state['df_old'].copy())
     else:
