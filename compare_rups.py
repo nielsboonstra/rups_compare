@@ -223,7 +223,7 @@ with st.sidebar:
 
 #On the main page, give user the option to preview both uploaded files that can be hidden/collapsed by clicking on an arrow
 if st.session_state['df_old'] is not None:
-    st.warning('Let op! Het kan zijn dat de tool hieronder foutmeldingen laat zien vanuit het achterliggende scipt. Check in dat geval hieronder of je data goed is ingeladen. Check vooral of de headers op de juiste rij zijn ingelezen.')
+    st.warning('Let op! Het kan zijn dat de tool hieronder foutmeldingen laat zien vanuit het achterliggende scipt. Controleer in dat geval hieronder of je data goed is ingeladen. Check vooral of de headers op de juiste rij zijn ingelezen.')
     with st.expander("📊 Bekijk de oudere RUPS-data", expanded=False):
         st.dataframe(st.session_state['df_old'])
 
