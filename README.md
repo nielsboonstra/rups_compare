@@ -1,21 +1,22 @@
 # 🐛 RUPS Vergelijkingstool
 
-Deze repository bevat een Streamlit-applicatie voor het vergelijken van RUPS-planningen tussen twee verschillende jaren. De tool is bedoeld om verschillen in maatregelen te identificeren en te visualiseren op basis van geüploade Excel-bestanden.
+Deze repository bevat een Streamlit-applicatie voor het vergelijken van RUPS-planningen tussen twee verschillende jaren. De tool is bedoeld om verschillen in maatregelen te identificeren en inzichtelijk te maken op basis van geüploade Excel-bestanden.
 
 ## ⚙️ Functionaliteit
-- Upload twee Excel-bestanden (oud en nieuw) met RUPS-planningen.
-- Vergelijk de planningen en identificeer toegevoegde, verwijderde en gewijzigde maatregelen.
+- Upload twee Excel-bestanden: Één oude en één nieuwe RUPS-planning, van twee opvolgende jaren
+- De tool vergelijkt de planningen en identificeert toegevoegde, verwijderde en gewijzigde maatregelen.
 - Download het resultaat als een Excel-bestand met drie tabbladen: Vergelijking, Verwijderd, Toegevoegd.
 
-## 🚀 Gebruik
+## 🚀 Lokaal gebruik
 1. Start de applicatie:
 	```powershell
 	streamlit run compare_rups.py
 	```
 2. Upload het oude en nieuwe RUPS-bestand via de zijbalk.
-3. Selecteer de juiste kolommen voor maatregelnaam en maatregelnr.
+3. Selecteer de juiste kolommen, en pas de overige variabele velden aan waar nodig.
 4. Klik op "Voer vergelijking uit" om de analyse uit te voeren.
 5. Download het resultaat als Excel-bestand.
+6. Optioneel: Maak het Excel-bestand inzichtelijker door conditional formatting toe te passen op de laatste drie kolommen.
 
 ## 📦 Vereisten
 - Python 3.8+
@@ -35,4 +36,4 @@ pip install -r requirements.txt
 - `requirements.txt`: Lijst van vereiste Python-pakketten.
 
 ## 📬 Contact
-Voor vragen of suggesties, neem contact op met de beheerder van deze repository.
+Voor vragen of suggesties, neem vooral even contact op met de beheerder van deze repository.
